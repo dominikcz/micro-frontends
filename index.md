@@ -1,79 +1,79 @@
-Techniques, strategies and recipes for building a __modern web app__ with __multiple teams__ that can __ship features independently__.
+Techniki, strategie i receptury budowy __nowoczesnych aplikacji web__ przez __wiele zespołów__, które mogą __dostarczać funkcjonalnosci niezależnie__.
 
-## What are Micro Frontends?
+## Czym są Micro Frontends?
 
-The term __Micro Frontends__ first came up in [ThoughtWorks Technology Radar](https://www.thoughtworks.com/radar/techniques/micro-frontends) at the end of 2016. It extends the concepts of micro services to the frontend world. The current trend is to build a feature-rich and powerful browser application, aka single page app, which sits on top of a micro service architecture. Over time the frontend layer, often developed by a separate team, grows and gets more difficult to maintain. That's what we call a [Frontend Monolith](https://www.youtube.com/watch?v=pU1gXA0rfwc).
+Termin __Micro Frontends__ po raz pierwszy pojawił się w [ThoughtWorks Technology Radar](https://www.thoughtworks.com/radar/techniques/micro-frontends) pod koniec 2016 roku. Rozszerza koncepcje mikrousług na świat frontendu. Zgodnie z obecnym trendem budujemy bogate w funkcje i wydajne aplikacje web, zwane również aplikacjami jednostronicowymi (SPA), które odwołuja się do mikrousług. Z biegiem czasu warstwa frontendowa, często rozwijana przez osobny zespół, rozrasta się i staje się trudniejsza w utrzymaniu. Nazywamy to [monolitem frontendowym](https://www.youtube.com/watch?v=pU1gXA0rfwc).
 
-The idea behind Micro Frontends is to think about a website or web app as __a composition of features__ which are owned by __independent teams__. Each team has a __distinct area of business__ or __mission__ it cares about and specialises in. A team is __cross functional__ and develops its features __end-to-end__, from database to user interface.
+Ideą Micro Frontends jest myślenie o aplikacji web jako o __kompozycji funkcjonalności__, które są własnością __niezależnych zespołów__. Każdy zespół ma __odrębną dziedzinę działalności__ lub __misję__, o którą się troszczy i w której się specjalizuje. Zespół jest __interdyscyplinarny__ i rozwija swoje funkcje __od początku do końca__, od bazy danych po interfejs użytkownika.
 
-However, this idea is not new. It has a lot in common with the [Self-contained Systems](http://scs-architecture.org/) concept. In the past approaches like this went by the name of [Frontend Integration for Verticalised Systems](https://dev.otto.de/2014/07/29/scaling-with-microservices-and-vertical-decomposition/). But Micro Frontends is clearly a more friendly and less bulky term.
+Pomysł ten nie jest jednak nowy. Ma wiele wspólnego z koncepcją [Self-contained Systems](http://scs-architecture.org/). W przeszłości takie podejście nosiło nazwę [Frontend Integration for Verticalised Systems](https://dev.otto.de/2014/07/29/scaling-with-microservices-and-vertical-decomposition/). Micro Frontends jest dużo bardziej przyjaznym i poręcznym terminem.
 
 __Monolithic Frontends__
 <img alt="Monolithic Frontends" src="./ressources/diagrams/organisational/monolith-frontback-microservices.png" loading="lazy" />
 
 
 __Organisation in Verticals__
-<img alt="End-To-End Teams with Micro Frontends" src="./ressources/diagrams/organisational/verticals-headline.png" loading="lazy" />
+<img alt="Zespoły z Micro Frontends" src="./ressources/diagrams/organisational/verticals-headline.png" loading="lazy" />
 
-## What's a Modern Web App?
+## Czym jest nowoczesna aplikacja web?
 
-In the introduction I've used the phrase "building a modern web app". Let's define the assumptions that are connected with this term.
+We wstępie użyłem sformułowania „budowa nowoczesnych aplikacji web". Zdefiniujmy założenia, które wiążą się z tym terminem.
 
-To put this into a broader perspective, [Aral Balkan](https://ar.al/) has written a blog post about what he calls the [Documents‐to‐Applications Continuum](https://ar.al/notes/the-documents-to-applications-continuum/). He comes up with the concept of a sliding scale where a site, built out of __static documents__, connected via links, is __on the left__ end and a pure behaviour driven, __contentless application__ like an online photo editor is __on the right__.
+Aby spojrzeć na to z szerszej perspektywy, [Aral Balkan](https://ar.al/) napisał post na blogu o tym, co nazywa [Documents‐to‐Applications Continuum](https://ar.al/notes/the-documents-to-applications-continuum/). Wymyśla koncepcję osi, w której witryna zbudowana ze __statycznych dokumentów__ połączonych linkami znajduje się __po lewej stronie__, a w pełni zorientowana na zachowania, __aplikacja bez treści__, jak internetowy edytor zdjęć, znajduje się __po prawej__.
 
-If you would position your project on the __left side of this spectrum__, an __integration on webserver level__ is a good fit. With this model a server collects and __concatenates HTML strings__ from all components that make up the page requested by the user. Updates are done by reloading the page from the server or replacing parts of it via ajax. [Gustaf Nilsson Kotte](https://twitter.com/gustaf_nk/) has written a [comprehensive article](https://gustafnk.github.io/microservice-websites/) on this topic.
+Jeśli umieścisz swój projekt po __lewej stronie tego spektrum__, dobrym wyborem będzie __integracja na poziomie serwera WWW__. W tym modelu serwer zbiera i __łączy ciągi znaków HTML__ ze wszystkich komponentów składających się na żądaną przez użytkownika stronę. Aktualizacje odbywają się poprzez przeładowanie strony z serwera lub wymianę jej części przez ajax. [Gustaf Nilsson Kotte](https://twitter.com/gustaf_nk/) napisał [obszerny artykuł](https://gustafnk.github.io/microservice-websites/) na ten temat.
 
-When your user interface has to provide __instant feedback__, even on unreliable connections, a pure server rendered site is not sufficient anymore. To implement techniques like [Optimistic UI](https://www.smashingmagazine.com/2016/11/true-lies-of-optimistic-user-interfaces/) or [Skeleton Screens](http://www.lukew.com/ff/entry.asp?1797) you need to be able to also __update__ your UI __on the device itself__. Google's term [Progressive Web Apps](https://developers.google.com/web/progressive-web-apps/) aptly describes the __balancing act__ of being a good citizen of the web (progressive enhancement) while also providing app-like performance. This kind of application is located somewhere __around the middle of the site-app-continuum__. Here a solely server based solution is not sufficient anymore. We have to move the __integration into the browser__, and this is the focus of this article.
+Gdy interfejs użytkownika musi zapewniać __natychmiastową informację zwrotną__, nawet w przypadku zawodnych połączeń, witryna renderowana wyłącznie przez serwer nie będzie już wystarczająca. Chcąc wdrożyć techniki, takie jak [Optimistic UI](https://www.smashingmagazine.com/2016/11/true-lies-of-optimistic-user-interfaces/) lub [Skeleton Screens](http://www.lukew. com/ff/entry.asp?1797) musisz mieć możliwość __aktualizacji__ swojego interfejsu użytkownika __na samym urządzeniu__. Termin Google [Progressive Web Apps](https://developers.google.com/web/progressive-web-apps/) trafnie opisuje __balansowanie__ pomiędzy byciem dobrym obywatelem sieci (progresywne ulepszanie), a jednocześnie zapewnieniem wydajnosci podobnej do aplikacji. Ten rodzaj aplikacji znajduje się gdzieś __mniej więcej po środku kontinuum witryna-aplikacja__. Tutaj rozwiązanie oparte wyłącznie na serwerze nie jest już wystarczające i musimy przenieść __integrację do przeglądarki__. To właśnie jest tematem niniejszego artykułu.
 
-## Core Ideas behind Micro Frontends
+## Podstawowe idee kryjące się za Micro Frontends
 
-* __Be Technology Agnostic__<br>Each team should be able to choose and upgrade their stack without having to coordinate with other teams. [Custom Elements](#the-dom-is-the-api) are a great way to hide implementation details while providing a neutral interface to others.
-* __Isolate Team Code__<br>Don’t share a runtime, even if all teams use the same framework. Build independent apps that are self contained. Don't rely on shared state or global variables.
-* __Establish Team Prefixes__<br>Agree on naming conventions where isolation is not possible yet. Namespace CSS, Events, Local Storage and Cookies to avoid collisions and clarify ownership.
-* __Favor Native Browser Features over Custom APIs__<br>Use [Browser Events for communication](#parent-child-communication--dom-modification) instead of building a global PubSub system. If you really have to build a cross team API, try keeping it as simple as possible.
-* __Build a Resilient Site__<br>Your feature should be useful, even if JavaScript failed or hasn't executed yet. Use [Universal Rendering](#serverside-rendering--universal-rendering) and Progressive Enhancement to improve perceived performance.
+* __Bądź niezależny od technologii__<br>Każdy zespół powinien mieć możliwość wyboru i ulepszenia swojego stosu bez konieczności koordynacji z innymi zespołami. [Custom Elements](#the-dom-is-the-api) to świetny sposób na ukrycie szczegółów implementacji, zapewniając jednocześnie neutralny interfejs innym.
+* __Izoluj kod zespołu__<br>Nie udostępniaj środowiska uruchomieniowego, nawet jeśli wszystkie zespoły używają tego samego frameworka. Twórz niezależne aplikacje, które są samowystarczalne. Nie polegaj na wspólnych stanach ani zmiennych globalnych.
+* __Ustal prefiksy zespołów__<br>Uzgodnij konwencje nazewnictwa tam, gdzie izolacja nie jest jeszcze możliwa. Użyj przestrzeni nazw dla CSS, zdarzeń, Local Storage i ciastek w celu uniknięcia kolizji i pokazania własności.
+* __Preferuj natywne funkcje przeglądarki zamiast niestandardowych API__<br>Używaj [Zdarzeń przeglądarki do komunikacji](#parent-child-communication--dom-modification) zamiast budować globalny system PubSub. Jeśli naprawdę musisz zbudować międzyzespołowe API, postaraj się, aby było to jak najprostsze.
+* __Zbuduj elastyczną witrynę__<br>Twoja funkcja powinna być użyteczna, nawet jeśli JavaScript nie zadziałał lub nie został jeszcze uruchomiony. Użyj [Universal Rendering](#serverside-rendering--universal-rendering) i Progressive Enhancement, aby poprawić postrzeganą wydajność.
 
 ---
 
-## The DOM is the API
+## DOM jest API
 
-[Custom Elements](https://developers.google.com/web/fundamentals/getting-started/primers/customelements), the interoperability aspect from the Web Components Spec, are a good primitive for integration in the browser. Each team builds their component __using their web technology of choice__ and __wraps it inside a Custom Element__ (e.g. `<order-minicart></order-minicart>`). The DOM specification of this particular element (tag-name, attributes & events) acts as the contract or public API for other teams. The advantage is that they can use the component and its functionality without having to know the implementation. They just have to be able to interact with the DOM.
+[Custom Elements](https://developers.google.com/web/fundamentals/getting-started/primers/customelements), czyli aspekt interoperacyjności ze specyfikacji Web Components, jest dobrą podstawą do integracji w przeglądarce. Każdy zespół buduje swój komponent __przy użyciu wybranej przez siebie technologii__ i __opakowuje go w Custom Element__ (np. `<order-minicart></order-minicart>`). Specyfikacja DOM tego konkretnego elementu (nazwa tagu, atrybuty i zdarzenia) działa jak kontrakt lub publiczne API dla innych zespołów. Zaletą jest to, że mogą korzystać z komponentu i jego funkcjonalności bez znajomości implementacji. Muszą jedynie mieć możliwość interakcji z DOM.
 
-But Custom Elements alone are not the solution to all our needs. To address progressive enhancement, universal rendering or routing we need additional pieces of software.
+Jednak same Custom Elements nie są rozwiązaniem dla wszystkich naszych potrzeb. Aby mówić o progresywnym ulepszaniu, uniwersalnym renderowaniu czy routingu, potrzebujemy dodatkowego oprogramowania.
 
-This page is divided into two main areas. First we will discuss [Page Composition](#page-composition) - how to assemble a page out of components owned by different teams. After that we'll show examples for implementing clientside [Page Transition](#navigating-between-pages).
+Ta strona jest podzielona na dwa główne obszary. Najpierw omówimy [Kompozycję strony](#page-composition) — jak złożyć stronę z komponentów należących do różnych zespołów. Następnie pokażemy przykłady implementacji [przejść pomiędzy stronami](#navigating-between-pages) po stronie klienta.
 
-## Page Composition
+## Kompozycja strony
 
-Beside the __client-__ and __serverside__ integration of code written in __different frameworks__ itself, there are a lot of side topics that should be discussed: mechanisms to __isolate js__, __avoid css conflicts__, __load resources__ as needed, __share common resources__ between teams, handle __data fetching__ and think about good __loading states__ for the user. We'll go into these topics one step at a time.
+Poza samą integracją kodu __po stronie klienta__ i __serwera__ napianego w __różnych frameworkach__, istnieje wiele pobocznych tematów, które należy omówić: mechanizmy __izolowania js__, __unikanie konfliktów css__, __ładowanie zasobów__ w razie potrzeby, __dzielenie wspólnych zasobów__ między zespołami, __pobieranie danych__ i dobrej prezentacji __wskaźników ładowania__ dla użytkownika. Zajmiemy się tymi tematami krok po kroku.
 
-### The Base Prototype
+### Prototyp
 
-The product page of this model tractor store will serve as the basis for the following examples.
+Jako podstawa dla poniższych przykładów posłuży nam strona produktu sklepu z traktorami.
 
-It features a __variant selector__ to switch between the three different tractor models. On change product image, name, price and recommendations are updated. There is also a __buy button__, which adds the selected variant to the basket and a __mini basket__ at the top that updates accordingly.
+Na stronie jest __selektor modelu__ do przełączania między trzema różnymi modelami traktorów. Po zmianie obraz produktu, aktualizowane są nazwa, cena i rekomendacje. Dostępny jest również __przycisk kupowania__, który dodaje wybrany model do koszyka, a __minikoszyk__ u góry odpowiednio się aktualizuje.
 
-[![Example 0 - Product Page - Plain JS](./ressources/video/model-store-0.gif)](./0-model-store/)
+[![Przykład 0 — strona produktu — zwykły JS](./ressources/video/model-store-0.gif)](./0-model-store/)
 
-[try in browser](./0-model-store/) & [inspect the code](https://github.com/neuland/micro-frontends/tree/master/0-model-store)
+[spróbuj w przeglądarce](./0-model-store/) i [sprawdź kod](https://github.com/neuland/micro-frontends/tree/master/0-model-store)
 
-All HTML is generated client side using __plain JavaScript__ and ES6 Template Strings with __no dependencies__. The code uses a simple state/markup separation and re-renders the entire HTML client side on every change - no fancy DOM diffing and __no universal rendering__ for now. Also __no team separation__ - [the code](https://github.com/neuland/micro-frontends/tree/master/0-model-store) is written in one js/css file.
+Cały HTML jest generowany po stronie klienta przy użyciu __zwykłego JavaScript__ i szablonów ES6 z __bez zależności__. Kod wykorzystuje prostą separację stanu/znaczników i ponownie renderuje całą stronę klienta HTML po każdej zmianie - na razie bez fantazyjnego różnicowania DOM i __bez uniwersalnego renderowania__. Nie ma też __separacji zespołu__ - [kod](https://github.com/neuland/micro-frontends/tree/master/0-model-store) jest zapisany w jednym pliku js/css.
 
-### Clientside Integration
+### Integracja po stronie klienta
 
-In this example, the page is split into separate components/fragments owned by three teams. __Team Checkout__ (blue) is now responsible for everything regarding the purchasing process - namely the __buy button__ and __mini basket__. __Team Inspire__ (green) manages the __product recommendations__ on this page. The page itself is owned by __Team Product__ (red).
+W tym przykładzie strona jest podzielona na osobne komponenty/fragmenty należące do trzech zespołów. __Team Checkout__ (niebieski) jest teraz odpowiedzialny za wszystko, co dotyczy procesu zakupu, a mianowicie za __przycisk kupowania__ i __minikoszyk__. __Team Inspire__ (zielony) zarządza __rekomendacjami produktów__ na tej stronie. Sama strona jest własnością __Team Product__ (czerwony).
 
-[![Example 1 - Product Page - Composition](./ressources/screen/three-teams.png)](./1-composition-client-only/)
+[![Przykład 1 - Strona produktu - Skład](./ressources/screen/three-teams.png)](./1-composition-client-only/)
 
-[try in browser](./1-composition-client-only/) & [inspect the code](https://github.com/neuland/micro-frontends/tree/master/1-composition-client-only)
+[spróbuj w przeglądarce](./1-composition-client-only/) i [sprawdź kod](https://github.com/neuland/micro-frontends/tree/master/1-composition-client-only)
 
-Each team
+Każdy zespół
 
-__Team Product__ decides which functionality is included and where it is positioned in the layout. The page contains information that can be provided by Team Product itself, like the product name, image and the available variants. But it also includes fragments (Custom Elements) from the other teams.
+__Team Product__ decyduje, która funkcjonalność jest uwzględniona i gdzie jest umieszczona na stronie. Strona zawiera informacje, które może dostarczyć sam Team Product, takie jak nazwa produktu, zdjęcie i dostępne modele. Może jednak zawierać również fragmenty (Custom Elements) z innych zespołów.
 
-### How to Create a Custom Element?
+### Jak stworzyć Custom Element?
 
-Lets take the __buy button__ as an example. Team Product includes the button simply adding `<blue-buy sku="t_porsche"></blue-buy>` to the desired position in the markup. For this to work, Team Checkout has to register the element `blue-buy` on the page.
+Weźmy jako przykład __przycisk kupowania__. Team Product wstawił przycisk po prostu dodając w żądanym miejscu strony `<blue-buy sku="t_porsche"></blue-buy>`. Aby to zadziałało, Team Checkout musiał zarejestrować element `blue-buy` na stronie.
 
     class BlueBuy extends HTMLElement {
       connectedCallback() {
@@ -84,31 +84,31 @@ Lets take the __buy button__ as an example. Team Product includes the button sim
     }
     window.customElements.define('blue-buy', BlueBuy);
 
-Now every time the browser comes across a new `blue-buy` tag, the `connectedCallback` is called. `this` is the reference to the root DOM node of the custom element. All properties and methods of a standard DOM element like `innerHTML` or `getAttribute()` can be used.
+Teraz za każdym razem, gdy przeglądarka napotyka nowy tag `blue-buy`, wywoływane jest `connectedCallback`. `this` jest odniesieniem do głównego węzła DOM Custom Element. Dostępne są wszystkie właściwości i metody standardowego elementu DOM, takich jak `innerHTML` lub `getAttribute()`.
 
 <img alt="Custom Element in Action" src="./ressources/video/custom-element.gif" loading="lazy" />
 
-When naming your element the only requirement the spec defines is that the name must __include a dash (-)__ to maintain compatibility with upcoming new HTML tags. In the upcoming examples the naming convention `[team_color]-[feature]` is used. The team namespace guards against collisions and this way the ownership of a feature becomes obvious, simply by looking at the DOM.
+Podczas nazywania elementu jedynym wymaganiem, jakie określa specyfikacja, jest to, że nazwa musi __zawierać myślnik (-)__, aby zachować zgodność z nadchodzącymi nowymi tagami HTML. W kolejnych przykładach używana jest konwencja nazewnictwa `[kolor_zespołu]-[funkcja]`. Przestrzeń nazw zespołu chroni przed kolizjami a zarazem zespół będący właścicielem funkcji staje się oczywisty, z samego spojrzenia na DOM.
 
-### Parent-Child Communication / DOM Modification
+### Komunikacja rodzic-dziecko / Modyfikacja DOM
 
-When the user selects another tractor in the __variant selector__, the __buy button has to be updated__ accordingly. To achieve this Team Product can simply __remove__ the existing element from the DOM __and insert__ a new one.
+Gdy użytkownik wybierze inny ciągnik w __selektorze modeli__, __przycisk kupowania__ musi zostać odpowiednio zaktualizowany. Aby osiągnąć ten produkt zespołowy, wystarczy __usunąć__ istniejący element z DOM __i wstawić__ nowy.
 
     container.innerHTML;
     // => <blue-buy sku="t_porsche">...</blue-buy>
     container.innerHTML = '<blue-buy sku="t_fendt"></blue-buy>';
 
-The `disconnectedCallback` of the old element gets invoked synchronously to provide the element with the chance to clean up things like event listeners. After that the `connectedCallback` of the newly created `t_fendt` element is called.
+Funkcja `disconnectedCallback` starego elementu jest wywoływana synchronicznie, aby zapewnić elementowi szansę na porządki, takie jak wyczyszczenie podpiętych zdarzeń. Następnie wywoływana jest funkcja `connectedCallback` nowo utworzonego elementu `t_fendt`.
 
-Another more performant option is to just update the `sku` attribute on the existing element.
+Inną, bardziej wydajną opcją jest po prostu aktualizacja atrybutu `sku` istniejącego elementu.
 
     document.querySelector('blue-buy').setAttribute('sku', 't_fendt');
 
-If Team Product used a templating engine that features DOM diffing, like React, this would be done by the algorithm automatically.
+Gdyby Team Product używał silnika szablonów, który obsługuje różnicowanie DOM, takiego jak React, algorytm zrobiłby to automatycznie.
 
 <img alt="Custom Element Attribute Change" src="./ressources/video/custom-element-attribute.gif" loading="lazy" />
 
-To support this the Custom Element can implement the `attributeChangedCallback` and specify a list of `observedAttributes` for which this callback should be triggered.
+Aby to obsłużyć Custom Element może zaimplementować funkcję `attributeChangedCallback` i określić listę `observedAttributes`, dla których ma zostać wywołana ta funkcja.
 
     const prices = {
       t_porsche: '66,00 €',
@@ -135,28 +135,28 @@ To support this the Custom Element can implement the `attributeChangedCallback` 
     }
     window.customElements.define('blue-buy', BlueBuy);
 
-To avoid duplication a `render()` method is introduced which is called from `connectedCallback` and `attributeChangedCallback`. This method collects needed data and innerHTML's the new markup. When deciding to go with a more sophisticated templating engine or framework inside the Custom Element, this is the place where its initialisation code would go.
+Aby uniknąć powielania kodu, wprowadzono metodę `render()`, która jest wywoływana z `connectedCallback` i `attributeChangedCallback`. Ta metoda zbiera potrzebne dane i ustawia zawartość innerHTML nowego znacznika. Decydując się na bardziej wyrafinowany silnik szablonów lub framework wewnątrz Custom Element, tutaj trafiłby jego kod inicjujący.
 
-### Browser Support
+### Wsparcie w przeglądarkach
 
-The above example uses the Custom Element V1 Spec which is currently [supported in Chrome, Safari and Opera](http://caniuse.com/#feat=custom-elementsv1). But with [document-register-element](https://github.com/WebReflection/document-register-element) a lightweight and battle-tested polyfill is available to make this work in all browsers. Under the hood, it uses the [widely supported](http://caniuse.com/#feat=mutationobserver) Mutation Observer API, so there is no hacky DOM tree watching going on in the background.
+W powyższym przykładzie zastosowano specyfikację Custom Element V1, która jest obecnie [obsługiwana w przeglądarkach Chrome, Safari i Opera](http://caniuse.com/#feat=custom-elementsv1). Ale z [document-register-element](https://github.com/WebReflection/document-register-element) dostępny jako lekki i przetestowany w boju polyfill, zadziała we wszystkich przeglądarkach. Korzysta on z [powszechnie wspieranego](http://caniuse.com/#feat=mutationobserver) Mutation Observer API, więc w tle nie ma podglądania drzewa DOM.
 
-### Framework Compatibility
+### Kompatybilność frameworków
 
-Because Custom Elements are a web standard, all major JavaScript frameworks like Angular, React, Preact, Vue or Hyperapp support them. But when you get into the details, there are still a few implementation problems in some frameworks. At [Custom Elements Everywhere](https://custom-elements-everywhere.com/) [Rob Dodson](https://twitter.com/rob_dodson) has put together a compatibility test suite that highlights unresolved issues.
+Ponieważ Custom Elements są standardem web, obsługują je wszystkie główne frameworki JavaScript, takie jak Angular, React, Preact, Vue czy Hyperapp. Ale kiedy przejdziesz do szczegółów, nadal istnieje kilka problemów z implementacją w niektórych frameworkach. W [Custom Elements Everywhere](https://custom-elements-everywhere.com/) [Rob Dodson](https://twitter.com/rob_dodson) przygotował zestaw testów zgodności, który zwraca uwagę na nierozwiązane problemy.
 
-### Avoid Framework Anarchy
+### Unikaj anarchii frameworków
 
-Using Custom Elements is a great way to achieve a high amount of decoupling between the fragments of the individual teams. This way, each team is free to pick the frontend framework of their choice. But just because you can does not mean that it's a wise idea to mix different technologies. Try to avoid [Micro Frontends Anarchy](https://www.thoughtworks.com/radar/techniques/micro-frontend-anarchy) and create a reasonable level of alignment between the various teams. This way, teams can share learning and best practices with each other. It will also make your life easier when you want to establish a central pattern library.
-That said, the capability of mixing technologies can be handy when you're working with a legacy application and want to migrate to a new tech stack.
+Korzystanie z elementów niestandardowych to świetny sposób na osiągnięcie wysokiego stopnia rozdzielenia między fragmentami poszczególnych zespołów. W ten sposób każdy zespół ma swobodę wyboru frameworka frontendowego. Ale to, że możesz, nie oznacza, że ​​mieszanie różnych technologii jest dobrym pomysłem. Staraj się unikać [Micro Frontends Anarchy](https://www.thoughtworks.com/radar/techniques/micro-frontend-anarchy) i stwórz rozsądny poziom zgodności między różnymi zespołami. W ten sposób zespoły mogą dzielić się wiedzą i najlepszymi praktykami. Ułatwi Ci to również życie, gdy zechcesz założyć centralną bibliotekę wzorów.
+To powiedziawszy, możliwość łączenia technologii może być przydatna, gdy pracujesz ze starszą aplikacją i chcesz przeprowadzić migrację do nowego stosu technologicznego.
 
-### Child-Parent or Siblings Communication / DOM Events
+### Komunikacja między dzieckiem a rodzicem lub rodzeństwem / Zdarzenia DOM
 
-But passing down attributes is not sufficient for all interactions. In our example the __mini basket should refresh__ when the user performs a __click on the buy button__.
+Przekazywanie w dół atrybutów nie jest wystarczające dla wszystkich interakcji. W naszym przykładzie __minikoszyk powinien się odświeżyć__, gdy użytkownik __kliknie przycisk kupowania__.
 
-Both fragments are owned by Team Checkout (blue), so they could build some kind of internal JavaScript API that lets the mini basket know when the button was pressed. But this would require the component instances to know each other and would also be an isolation violation.
+Oba fragmenty są własnością Team Checkout (niebieski), więc mogliby zbudować coś w rodzaju wewnętrznego API JavaScript, które poinformuje minikoszyk, kiedy naciśnięto przycisk. Wymagałoby to jednak wzajemnej znajomości instancji komponentów, a także stanowiłoby naruszenie izolacji.
 
-A cleaner way is to use a PubSub mechanism, where a component can publish a message and other components can subscribe to specific topics. Luckily browsers have this feature built-in. This is exactly how browser events like `click`, `select` or `mouseover` work. In addition to native events there is also the possibility to create higher level events with `new CustomEvent(...)`. Events are always tied to the DOM node they were created/dispatched on. Most native events also feature bubbling. This makes it possible to listen for all events on a specific sub-tree of the DOM. If you want to listen to all events on the page, attach the event listener to the window element. Here is how the creation of the `blue:basket:changed`-event looks in the example:
+Czystszym sposobem jest użycie mechanizmu PubSub, w którym komponent może publikować wiadomość, a inne komponenty mogą subskrybować określone tematy. Na szczęście przeglądarki mają tę funkcję wbudowaną. Dokładnie w ten sposób działają zdarzenia przeglądarki, takie jak `click`, `select` lub `mouseover`. Oprócz natywnych zdarzeń istnieje również możliwość tworzenia zdarzeń wyższego poziomu za pomocą `new CustomEvent(...)`. Zdarzenia są zawsze powiązane z węzłem DOM, w którym zostały utworzone/wysłane. Większość natywnych zdarzeń obsługuje bąbelkowanie. Umożliwia to nasłuchiwanie wszystkich zdarzeń w określonym poddrzewie DOM. Jeśli chcesz nasłuchiwać wszystkich zdarzeń na stronie, dołącz obsługę zdarzenia do elementu okna. Oto przykład tworzenia zdarzenia `blue:basket:changed`:
 
     class BlueBuy extends HTMLElement {
       [...]
@@ -179,7 +179,7 @@ A cleaner way is to use a PubSub mechanism, where a component can publish a mess
       }
     }
 
-The mini basket can now subscribe to this event on `window` and get notified when it should refresh its data.
+Minikoszyk może teraz subskrybować to zdarzenie na elemencie `window` i otrzymywać powiadomienia, kiedy powinien odświeżyć swoje dane.
 
     class BlueBasket extends HTMLElement {
       connectedCallback() {
@@ -194,7 +194,7 @@ The mini basket can now subscribe to this event on `window` and get notified whe
       }
     }
 
-With this approach the mini basket fragment adds a listener to a DOM element which is outside its scope (`window`). This should be ok for many applications, but if you are uncomfortable with this you could also implement an approach where the page itself (Team Product) listens to the event and notifies the mini basket by calling `refresh()` on the DOM element.
+Przy takim podejściu fragment minikoszyka dodaje obsługę zdarzenia do elementu DOM, który jest poza jego zakresem (`window`). Powinno to być bezpieczne w przypadku wielu aplikacji, ale jeśli nie czujesz się z tym komfortowo, możesz zawsze zastosować podejście, w którym sama strona (Team Product) nasłuchuje zdarzenia i powiadamia minikoszyk, wywołując funkcję `refresh()` na elemencie DOM.
 
     // page.js
     const $ = document.getElementsByTagName;
@@ -203,28 +203,28 @@ With this approach the mini basket fragment adds a listener to a DOM element whi
       $('blue-basket')[0].refresh();
     });
 
-Imperatively calling DOM methods is quite uncommon, but can be found in [video element api](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement#methods) for example. If possible the use of the declarative approach (attribute change) should be preferred.
+Imperatywne wywoływanie metod DOM jest dość rzadkie, ale można je znaleźć na przykład w [video element api](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement#methods). Jeśli to możliwe, należy preferować podejście deklaratywne (zmiana atrybutu).
 
-## Serverside Rendering / Universal Rendering
+## Renderowanie po stronie serwera / Renderowanie uniwersalne
 
-Custom Elements are great for integrating components inside the browser. But when building a site that is accessible on the web, chances are that initial load performance matters and users will see a white screen until all js frameworks are downloaded and executed. Additionally, it's good to think about what happens to the site if the JavaScript fails or is blocked. [Jeremy Keith](https://adactio.com/) explains the importance in his ebook/podcast [Resilient Web Design](https://resilientwebdesign.com/). Therefore the ability to render the core content on the server is key. Sadly the web component spec does not talk about server rendering at all. No JavaScript, no Custom Elements :(
+Custom Elements świetnie nadają się do integracji komponentów w przeglądarce. Jednak podczas tworzenia witryny, która jest dostępna w sieci, Ważna jest wydajność. Istnieje duże prawdopodobieństwo, że dopóki wszystkie frameworki js nie zostaną pobrane i uruchomione użytkownicy będą widzieć biały ekran. Dodatkowo dobrze jest pomyśleć o tym, co stanie się z witryną, jeśli JavaScript zawiedzie lub zostanie zablokowany. Wagę tego problemu pokazuje [Jeremy Keith](https://adactio.com/) w swoim ebooku/podcaście [Resilient Web Design](https://resilientwebdesign.com/). Dlatego możliwość wyrenderowania podstawowej zawartości na serwerze jest kluczowa. Niestety specyfikacja komponentów web w ogóle nie mówi o renderowaniu po stronie serwera. Nie ma JavaScript, nie ma Custom Elements :(
 
 ### Custom Elements + Server Side Includes = ❤️
 
-To make server rendering work, the previous example is refactored. Each team has their own express server and the `render()` method of the Custom Element is also accessible via url.
+W celu uruchomienia renderowania po stronie serwera zrefaktorujemy poprzedni przykład. Każdy zespół ma własny serwer ekspresowy, a metoda `render()` Custom Element jest również dostępna za pośrednictwem adresu URL.
 
     $ curl http://127.0.0.1:3000/blue-buy?sku=t_porsche
     <button type="button">buy for 66,00 €</button>
 
-The Custom Element tag name is used as the path name - attributes become query parameters. Now there is a way to server-render the content of every component. In combination with the `<blue-buy>`-Custom Elements something that is quite close to a __Universal Web Component__ is achieved:
+Nazwa znacznika Custom Element jest używana jako fragment ścieżki - atrybuty stają się parametrami zapytania. Teraz istnieje sposób na renderowanie zawartości każdego komponentu po stronie serwera. W połączeniu z `<blue-buy>`-Custom Element osiągamy coś, co jest dość bliskie do __Universal Web Component__:
 
     <blue-buy sku="t_porsche">
       <!--#include virtual="/blue-buy?sku=t_porsche" -->
     </blue-buy>
 
-The `#include` comment is part of [Server Side Includes](https://en.wikipedia.org/wiki/Server_Side_Includes), which is a feature that is available in most web servers. Yes, it's the same technique used back in the days to embed the current date on our web sites. There are also a few alternative techniques like [ESI](https://en.wikipedia.org/wiki/Edge_Side_Includes), [nodesi](https://github.com/Schibsted-Tech-Polska/nodesi), [compoxure](https://github.com/tes/compoxure) and [tailor](https://github.com/zalando/tailor), but for our projects SSI has proven itself as a simple and incredibly stable solution.
+Komentarz `#include` jest częścią [Server Side Includes](https://en.wikipedia.org/wiki/Server_Side_Includes), która jest funkcją dostępną na większości serwerów WWW. Tak, jest to ta sama technika, której używano kiedyś do umieszczania bieżącej daty na stronach. Istnieje również kilka alternatywnych technik, takich jak [ESI](https://en.wikipedia.org/wiki/Edge_Side_Includes), [nodesi](https://github.com/Schibsted-Tech-Polska/nodesi), [compoxure ](https://github.com/tes/compoxure) i [tailor](https://github.com/zalando/tailor), ale w naszych projektach SSI sprawdziło się jako proste i niezwykle stabilne rozwiązanie.
 
-The `#include` comment is replaced with the response of `/blue-buy?sku=t_porsche` before the web server sends the complete page to the browser. The configuration in nginx looks like this:
+Komentarz `#include` jest zastępowany odpowiedzią `/blue-buy?sku=t_porsche` zanim serwer WWW wyśle ​​całą stronę do przeglądarki. Konfiguracja w nginx wygląda tak:
 
     upstream team_blue {
       server team_blue:3001;
@@ -254,37 +254,37 @@ The `#include` comment is replaced with the response of `/blue-buy?sku=t_porsche
       }
     }
 
-The directive `ssi: on;` enables the SSI feature and an `upstream` and `location` block is added for every team to ensure that all urls which start with `/blue` will be routed to the correct application (`team_blue:3001`). In addition the `/` route is mapped to team red, which is controlling the homepage / product page.
+Dyrektywa `ssi: on;` włącza funkcję SSI, a bloki `upstream` i `location` dla każdego zespołu mają zapewnić, że wszystkie adresy URL zostanąskierowane do właściwej aplikacji (np. `/blue` do `team_blue: 3001`). Dodatkowo trasa `/` jest mapowana do zespołu red, który kontroluje stronę główną/stronę produktu.
 
-This animation shows the tractor store in a browser which has __JavaScript disabled__.
+Poniższa animacja przedstawia sklep z traktorami w przeglądarce __z wyłączoną obsługą JavaScript__.
 
-[![Serverside Rendering - Disabled JavaScript](./ressources/video/server-render.gif)](./ressources/video/server-render.mp4)
+[![Renderowanie po stronie serwera — wyłączony JavaScript](./ressources/video/server-render.gif)](./ressources/video/server-render.mp4)
 
-[inspect the code](https://github.com/neuland/micro-frontends/tree/master/2-composition-universal)
+[sprawdź kod](https://github.com/neuland/micro-frontends/tree/master/2-composition-universal)
 
-The variant selection buttons now are actual links and every click leads to a reload of the page. The terminal on the right illustrates the process of how a request for a page is routed to team red, which controls the product page and after that the markup is supplemented by the fragments from team blue and green.
+Przyciski wyboru modelu są teraz rzeczywistymi linkami, a każde kliknięcie powoduje przeładowanie strony. Terminal po prawej ilustruje proces routowania zapytania o stronę do zespołu red, który kontroluje stronę produktową, po czym strona jest uzupełniana fragmentami z zespołu blue i green.
 
-When switching JavaScript back on, only the server log messages for the first request will be visible. All subsequent tractor changes are handled client side, just like in the first example. In a later example the product data will be extracted from the JavaScript and loaded via a REST api as needed.
+Po ponownym włączeniu JavaScript widoczne będą tylko komunikaty dziennika serwera dotyczące pierwszego żądania. Wszystkie kolejne zmiany ciągnika są obsługiwane po stronie klienta, tak jak w pierwszym przykładzie. W późniejszym przykładzie dane produktu zostaną wyodrębnione z kodu JavaScript i w razie potrzeby załadowane przez żądanie REST.
 
-You can play with this sample code on your local machine. Only [Docker Compose](https://docs.docker.com/compose/install/) needs to be installed.
+Możesz poeksperymentować z kodem tego przykładu na komputerze lokalnym. Musisz jedynie zainstalować [Docker Compose](https://docs.docker.com/compose/install/).
 
     git clone https://github.com/neuland/micro-frontends.git
     cd micro-frontends/2-composition-universal
     docker-compose up --build
 
-Docker then starts the nginx on port 3000 and builds the node.js image for each team. When you open [http://127.0.0.1:3000/](http://127.0.0.1:3000/) in your browser you should see a red tractor. The combined log of `docker-compose` makes it easy to see what is going on in the network. Sadly there is no way to control the output color, so you have to endure the fact that team blue might be highlighted in green :)
+Następnie Docker uruchamia nginx na porcie 3000 i buduje obraz node.js dla każdego zespołu. Kiedy otworzysz [http://127.0.0.1:3000/](http://127.0.0.1:3000/) w przeglądarce, powinieneś zobaczyć czerwony traktor. Połączony dziennik `docker-compose` ułatwia sprawdzenie, co dzieje się w sieci. Niestety nie ma możliwości kontrolowania koloru wyjściowego, więc musisz znieść fakt, że niebieski zespół może być podświetlony na zielono :)
 
-The `src` files are mapped into the individual containers and the node application will restart when you make a code change. Changing the `nginx.conf` requires a restart of `docker-compose` in order to have an effect. So feel free to fiddle around and give feedback.
+Pliki `src` są mapowane do poszczególnych kontenerów, a aplikacja węzła przeładuje się po wprowadzeniu zmiany w kodzie. Zmiana `nginx.conf` wymaga restartu `docker-compose`, aby odniosła skutek. Więc nie krępuj się bawić i wyrażać opinię.
 
-### Data Fetching & Loading States
+### Ładowanie danych i stany pobierania
 
-A downside of the SSI/ESI approach is, that the __slowest fragment determines the response time__ of the whole page.
-So it's good when the response of a fragment can be cached.
-For fragments that are expensive to produce and hard to cache it's often a good idea to exclude them from the initial render.
-They can be loaded asynchronously in the browser.
-In our example the `green-recos` fragment, that shows personalized recommendations is a candidate for this.
+Wadą podejścia SSI/ESI jest to, że __najwolniejszy fragment określa czas ładowania__ całej strony.
+Dobrze zatem, gdy odpowiedź fragmentu może być buforowana.
+W przypadku fragmentów, które są kosztowne w renderowaniu i trudne do buforowania, często dobrym pomysłem jest wykluczenie ich z początkowego renderowania.
+Mogą być ładowane asynchronicznie w przeglądarce.
+W naszym przykładzie fragment `green-recos`, który pokazuje spersonalizowane rekomendacje jest do tego dobrym kandydatem.
 
-One possible solution would be that team red just skips the SSI Include.
+Jednym z możliwych rozwiązań byłoby po prostu pominięcie SSI Include przez zespół czerwony.
 
 **Before**
 
@@ -296,94 +296,95 @@ One possible solution would be that team red just skips the SSI Include.
 
     <green-recos sku="t_porsche"></green-recos>
 
-*Important Side-note: Custom Elements [cannot be self-closing](https://developers.google.com/web/fundamentals/web-components/customelements), so writing `<green-recos sku="t_porsche" />` would not work correctly.*
+*Ważna uwaga dodatkowa: Custom Elements [nie mogą być samozamykające się](https://developers.google.com/web/fundamentals/web-components/customelements), więc zapis `<green-recos sku="t_porsche" />` nie zadziałałby poprawnie.*
 
 <img alt="Reflow" src="./ressources/video/data-fetching-reflow.gif" style="width: 500px" loading="lazy" />
 
-The rendering only takes place in the browser.
-But, as can be seen in the animation, this change has now introduced a __substantial reflow__ of the page.
-The recommendation area is initially blank.
-Team greens JavaScript is loaded and executed.
-The API call for fetching the personalized recommendation is made.
-The recommendation markup is rendered and the associated images are requested.
-The fragment now needs more space and pushes the layout of the page.
+Renderowanie odbywa się tylko w przeglądarce.
+Jednak, jak widać na animacji, zmiana ta wprowadziła __widoczne ponowne formatowanie__ strony.
+Obszar poleceń jest początkowo pusty.
+JavaScript zespołu zielonego jest ładowany i wykonywany.
+Wykonywane jest żadanie API w celu pobrania spersonalizowanej rekomendacji.
+Rekomendowany znacznik jest renderowany i pobierane są skojarzone obrazy.
+Fragment potrzebuje teraz więcej miejsca i rozpycha układ strony.
 
-There are different options to avoid an annoying reflow like this.
-Team red, which controls the page, could __fixate the recommendation containers height__.
-On a responsive website its often tricky to determine the height, because it could differ for different screen sizes.
-But the more important issue is, that __this kind of inter-team agreement creates a tight coupling__ between team red and green.
-If team green wants to introduce an additional sub-headline in the reco element, it would have to coordinate with team red on the new height.
-Both teams would have to rollout their changes simultaneously to avoid a broken layout.
+Istnieją różne opcje, aby uniknąć takiego irytującego rozpychania.
+Zespół czerwony, który kontroluje stronę, mógłby __ustalić wysokość kontenera rekomendacji__.
+Na responsywnej stronie często jednak trudno jest określić wysokość, ponieważ może się różnić dla różnych rozmiarów ekranu.
+Większynm problemem jest jednak to, że __taki rodzaj porozumienia między zespołami tworzy ścisłe powiązanie__ między czerwonymi i zielonymi.
+Jeśli zespół zielonych chce wprowadzić dodatkowy nagłówek w elemencie rekomendacji, to musi się dogadać z zespołem czerwonych w kwestii nowej wysokości.
+Oba zespoły musiałyby wprowadzić swoje zmiany jednocześnie, aby uniknąć zepsucia układu.
 
-A better way is to use a technique called [Skeleton Screens](https://blog.prototypr.io/luke-wroblewski-introduced-skeleton-screens-in-2013-through-his-work-on-the-polar-app-later-fd1d32a6a8e7).
-Team red leaves the `green-recos` SSI Include in the markup.
-In addition team green changes the __server-side render method__ of its fragment so that it produces a __schematic version of the content__.
-The __skeleton markup__ can reuse parts of the real content's layout styles.
-This way it __reserves the needed space__ and the fill-in of the actual content does not lead to a jump.
+Lepszym sposobem jest użycie techniki o nazwie [Skeleton Screens](https://blog.prototypr.io/luke-wroblewski-introduced-skeleton-screens-in-2013-through-his-work-on-the-polar-app-later-fd1d32a6a8e7).
+Zespół czerwony pozostawia SSI `green-recos` w szablonie.
+Zespół zielony zmienia __metodę renderowania po stronie serwera__ swojego fragmentu, tak aby tworzył __schematyczną wersję zawartości__.
+__znaczniki szkieletu__ mogą ponownie wykorzystywać części stylów układu rzeczywistej treści.
+W ten sposób __rezerwuje potrzebną przestrzeń__, a załadowanie właściwej treści nie prowadzi do przeskoku.
 
 <img alt="Skeleton Screen" src="./ressources/video/data-fetching-skeleton.gif" style="width: 500px" loading="lazy" />
 
-Skeleton screens are also __very useful for client rendering__.
-When your custom element is inserted into the DOM due to a user action it could __instantly render the skeleton__ until the data it needs from the server has arrived.
+Szkieletowe ekrany są również __bardzo przydatne do renderowania po stronie klienta__.
+Kiedy Twój niestandardowy element zostanie wstawiony do DOM w wyniku działania użytkownika, może __natychmiast renderować szkielet__, dopóki nie dotrą dane, których potrzebuje z serwera.
 
-Even on an __attribute change__ like for the _variant select_ you can decide to switch to skeleton view until the new data arrives.
-This ways the user gets an indication that something is going on in the fragment.
-But when your endpoint responds quickly a short __skeleton flicker__ between the old and new data could also be annoying.
-Preserving the old data or using intelligent timeouts can help.
-So use this technique wisely and try to get user feedback.
+Nawet przy __zmianie atrybutu__, jak w przypadku _wyboru modelu_, możesz chcieć przełączyć się na widok szkieletu, dopóki nie pojawią się nowe dane.
+W ten sposób użytkownik otrzymuje wskazówkę, że coś się dzieje we fragmencie.
+Jednak gdy serwer reaguje szybko, krótkie __szkieletowe migotanie__ między starymi a nowymi danymi również może być irytujące.
+Pomocne może być zachowanie starych danych lub użycie inteligentnych limitów czasu.
+Więc używaj tej techniki rozsądnie i staraj się uzyskać opinie użytkowników.
 
-## Navigating Between Pages
+## Nawigacja pomiędzy stronami
 
-__to be continued soon ... (I promise)__
+__ciąg dalszy nastąpi wkrótce ... (obiecuję)__
 
-watch the [Github Repo](https://github.com/neuland/micro-frontends) to get notified
+obejrzyj [Github Repo](https://github.com/neuland/micro-frontends), aby otrzymać powiadomienie
 
 
 
-## Additional Resources
-- [Book: Micro Frontends in Action](https://www.manning.com/books/micro-frontends-in-action?a_aid=mfia&a_bid=5f09fdeb) Written by me.
-- [Talk: Micro Frontends - MicroCPH, Copenhagen 2019](https://www.youtube.com/watch?v=wCHYILvM7kU) ([Slides](https://noti.st/naltatis/zQb2m5/micro-frontends-the-nitty-gritty-details-or-frontend-backend-happyend)) The Nitty Gritty Details or Frontend, Backend, 🌈 Happyend
-- [Talk: Micro Frontends - Web Rebels, Oslo 2018](https://www.youtube.com/watch?v=dTW7eJsIHDg) ([Slides](https://noti.st/naltatis/HxcUfZ/micro-frontends-think-smaller-avoid-the-monolith-love-the-backend)) Think Smaller, Avoid the Monolith, ❤️the Backend
-- [Slides: Micro Frontends - JSUnconf.eu 2017](https://speakerdeck.com/naltatis/micro-frontends-building-a-modern-webapp-with-multiple-teams)
+## Dodatkowe zasoby
+- [Książka: Micro Frontends in Action](https://www.manning.com/books/micro-frontends-in-action?a_aid=mfia&a_bid=5f09fdeb) Napisane przeze mnie.
+- [Dyskusja: Micro Frontends - MicroCPH, Copenhagen 2019](https://www.youtube.com/watch?v=wCHYILvM7kU) ([Slajdy](https://noti.st/naltatis/zQb2m5/micro-frontends-the-nitty-gritty-details-or-frontend-backend-happyend)) The Nitty Gritty Details or Frontend, Backend, 🌈 Happyend
+- [Dyskusja: Micro Frontends - Web Rebels, Oslo 2018](https://www.youtube.com/watch?v=dTW7eJsIHDg) ([Slajdy](https://noti.st/naltatis/HxcUfZ/micro-frontends-think-smaller-avoid-the-monolith-love-the-backend)) Think Smaller, Avoid the Monolith, ❤️the Backend
+- [Slajdy: Micro Frontends - JSUnconf.eu 2017](https://speakerdeck.com/naltatis/micro-frontends-building-a-modern-webapp-with-multiple-teams)
 - [Talk: Break Up With Your Frontend Monolith - JS Kongress 2017](https://www.youtube.com/watch?v=W3_8sxUurzA) Elisabeth Engel talks about implementing Micro Frontends at gutefrage.net
-- [Article: Micro Frontends](https://martinfowler.com/articles/micro-frontends.html) Article by Cam Jackson on Martin Fowlers Blog
-- [Post: Micro frontends - a microservice approach to front-end web development](https://medium.com/@tomsoderlund/micro-frontends-a-microservice-approach-to-front-end-web-development-f325ebdadc16) Tom Söderlund explains the core concept and provides links on this topic
-- [Post: Microservices to Micro-Frontends](http://www.agilechamps.com/microservices-to-micro-frontends/) Sandeep Jain summarizes the key principals behind microservices and micro frontends
-- [Link Collection: Micro Frontends by Elisabeth Engel](https://micro-frontends.zeef.com/elisabeth.engel?ref=elisabeth.engel&share=ee53d51a914b4951ae5c94ece97642fc) extensive list of posts, talks, tools and other resources on this topic
-- [Awesome Micro Frontends](https://github.com/ChristianUlbrich/awesome-microfrontends) a curated list of links by Christian Ulbrich 🕶
-- [Custom Elements Everywhere](https://custom-elements-everywhere.com/) Making sure frameworks and custom elements can be BFFs
-- Tractors are purchasable at [manufactum.com](https://www.manufactum.com/) :)<br>_This store is developed by two teams using the here described techniques._
+- [Artykuł: Micro Frontends](https://martinfowler.com/articles/micro-frontends.html) Artykuł Cama Jacksona na blogu Martina Fowlersa
+- [Post: Micro frontends - a microservice approach to front-end web development](https://medium.com/@tomsoderlund/micro-frontends-a-microservice-approach-to-front-end-web-development-f325ebdadc16) Tom Söderlund wyjaśnia podstawową koncepcję i podaje linki na ten temat
+- [Post: Microservices to Micro-Frontends](http://www.agilechamps.com/microservices-to-micro-frontends/) Sandeep Jain podsumowuje kluczowe zasady stojące za mikroserwisami i micro frontends
+- [Zbiór linków: Micro Frontends by Elisabeth Engel](https://micro-frontends.zeef.com/elisabeth.engel?ref=elisabeth.engel&share=ee53d51a914b4951ae5c94ece97642fc) obszerna lista postów, wykładów, narzędzi i innych zasobów na ten temat
+- [Awesome Micro Frontends](https://github.com/ChristianUlbrich/awesome-microfrontends) wyselekcjonowana lista linków autorstwa Christiana Ulbricha 🕶
+- [Custom Elements Everywhere](https://custom-elements-everywhere.com/) Upewnij się, że różne frameworki i Custom Elements mogą być najlepszymi przyjaciółmi
+- Ciągniki można kupić na [manufactum.com](https://www.manufactum.com/) :)<br>_Ten sklep jest rozwijany przez dwa zespoły przy użyciu opisanych tutaj technik._
 
-## Related Techniques
-- [Posts: Cookie Cutter Scaling](https://paulhammant.com/categories.html#Cookie_Cutter_Scaling) David Hammet wrote a series of blog posts on this topic.
-- [Wikipedia: Java Portlet Specification](https://en.wikipedia.org/wiki/Java_Portlet_Specification) Specification that addresses similar topics for building enterprise portals.
+## Powiązane techniki
+– [Posty: Cookie Cutter Scaling](https://paulhammant.com/categories.html#Cookie_Cutter_Scaling) David Hammet napisał serię postów na blogu na ten temat.
+- [Wikipedia: Java Portlet Specification](https://en.wikipedia.org/wiki/Java_Portlet_Specification) Specyfikacja omawiająca podobne tematy podczas tworzenia portali korporacyjnych.
 
 ---
 
-## Things to come ... (very soon)
+## Rzeczy, które nadejdą ... (wkrótce)
 
-- Use Cases
-  - Navigating between pages
-    - soft vs. hard navigation
-    - universal router
+- Przypadki użycia
+  - Nawigacja pomiędzy stronami
+    - miękka vs. twarda nawigacja
+    - router uniwersalny
   - ...
-- Side Topics
-  - Isolated CSS / Coherent User Interface / Style Guides & Pattern Libraries
-  - Performance on initial load
-  - Performance while using the site
-  - Loading CSS
-  - Loading JS
-  - Integration Testing
+- Tematy poboczne
+  - Izolowany CSS / spójny interfejs użytkownika / przewodniki po stylach i bibliotekach wzorców
+  - Wydajność przy początkowym ładowaniu
+  - Wydajność podczas korzystania z witryny
+  - Ładowanie CSS'a
+  - Ładowanie JS
+  - Testy integracyjne
   - ...
 
 ## Contributors
-- [Koike Takayuki](https://github.com/koiketakayuki) who translated the site to [Japanese](https://micro-frontends-japanese.org/).
-- [Jorge Beltrán](https://github.com/scipion) who translated the site to [Spanish](https://micro-frontends-es.org).
-- [Bruno Carneiro](https://github.com/Tautorn) who translated the site to [Portuguese](https://tautorn.github.io/micro-frontends/).
-- [Soobin Bak](https://github.com/soobing) who translated the site to [Korean](https://soobing.github.io/micro-frontends/).
-- [Sergei Babin](https://github.com/serzn1) who translated the site to [Russian](https://serzn1.github.io/micro-frontends/).
-- [Shiwei Yang](https://github.com/swearer23) who translated the site to [Chinese](https://swearer23.github.io/micro-frontends/).
-- [Riccardo Moschetti](https://github.com/RiccardoGMoschetti) who translated the site to [Italian](https://riccardogmoschetti.github.io/micro-frontends/).
+- [Koike Takayuki](https://github.com/koiketakayuki), który przetłumaczył stronę na [japoński](https://micro-frontends-japanese.org/).
+- [Jorge Beltrán](https://github.com/scipion), który przetłumaczył stronę na [hiszpański](https://micro-frontends-es.org).
+- [Bruno Carneiro](https://github.com/Tautorn), który przetłumaczył stronę na [portugalski](https://tautorn.github.io/micro-frontends/).
+- [Soobin Bak](https://github.com/soobing), który przetłumaczył stronę na [koreański](https://soobing.github.io/micro-frontends/).
+- [Sergei Babin](https://github.com/serzn1), który przetłumaczył stronę na [rosyjski](https://serzn1.github.io/micro-frontends/).
+- [Shiwei Yang](https://github.com/swearer23), który przetłumaczył stronę na [chiński](https://swearer23.github.io/micro-frontends/).
+- [Riccardo Moschetti](https://github.com/RiccardoGMoschetti), który przetłumaczył stronę na [włoski](https://riccardogmoschetti.github.io/micro-frontends/).
+- [Dominik Czechowski](https://github.com/dominikcz), który przetłumaczył stronę na [polski](https://dominikcz.github.io/micro-frontends/).
 
 
-This site is generated by Github Pages. Its source can be found at [neuland/micro-frontends](https://github.com/neuland/micro-frontends/).
+Ta strona jest generowana przez Github Pages. Jego źródło można znaleźć pod adresem [neuland/micro-frontends](https://github.com/neuland/micro-frontends/).
