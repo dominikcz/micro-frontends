@@ -311,7 +311,7 @@ Fragment potrzebuje teraz więcej miejsca i rozpycha układ strony.
 Istnieją różne opcje, aby uniknąć takiego irytującego rozpychania.
 Zespół czerwony, który kontroluje stronę, mógłby __ustalić wysokość kontenera rekomendacji__.
 Na responsywnej stronie często jednak trudno jest określić wysokość, ponieważ może się różnić dla różnych rozmiarów ekranu.
-Większynm problemem jest jednak to, że __taki rodzaj porozumienia między zespołami tworzy ścisłe powiązanie__ między czerwonymi i zielonymi.
+Większym problemem jest jednak to, że __taki rodzaj porozumienia między zespołami tworzy ścisłe powiązanie__ między czerwonymi i zielonymi.
 Jeśli zespół zielonych chce wprowadzić dodatkowy nagłówek w elemencie rekomendacji, to musi się dogadać z zespołem czerwonych w kwestii nowej wysokości.
 Oba zespoły musiałyby wprowadzić swoje zmiany jednocześnie, aby uniknąć zepsucia układu.
 
